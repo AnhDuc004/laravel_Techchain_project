@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'category_id',
+        'catalogue_id',
         'name',
         'slug',
         'sku',
@@ -34,4 +34,21 @@ class Product extends Model
         'is_new' => 'boolean',
         'is_show_home' => 'boolean',
     ];
+    public function catalogue()
+    {
+        return $this->belongsTo(Catalogue::class, 'catalogue_id');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+    public function galleries()
+    {
+        return $this->hasMany(ProductGallery::class);
+    }
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 }
