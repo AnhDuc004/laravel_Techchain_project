@@ -112,6 +112,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product'));
     }
 
     /**
@@ -119,7 +120,19 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $product->load([
+            'catalogue',
+            'tags',
+            'galleries',
+            'variants',
+        ]);
+
+        $catalogues = Catalogue::query()->pluck('name', 'id')->all();
+        $colors = ProductColor::query()->pluck('name', 'id')->all();
+        $sizes = ProductSize::query()->pluck('name', 'id')->all();
+        $tags = Tag::query()->pluck('name', 'id')->all();
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'catalogues', 'colors', 'sizes', 'tags'));
     }
 
     /**
@@ -127,7 +140,85 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        list(
+            $dataProduct,
+            $dataProductVariants,
+            $dataProductGalleries,
+            $dataProductTags,
+            $dataDeleteGalleries
+        ) = $this->handleData($request);
+
+        try {
+            DB::beginTransaction();
+
+            $productImgThumbnailCurrent = $product->img_thumbnail; // Lưu lại giá trị hiện tại để xóa
+
+            /** @var Product $product */
+            $product->update($dataProduct);
+
+            foreach ($dataProductVariants as $item) {
+                $item += ['product_id' => $product->id];
+
+                ProductVariant::query()->updateOrCreate(
+                    [
+                        'product_id' => $item['product_id'],
+                        'product_size_id' => $item['product_size_id'],
+                        'product_color_id' => $item['product_color_id'],
+                    ],
+                    $item
+                );
+            }
+
+            $product->tags()->sync($dataProductTags);
+
+            foreach ($dataProductGalleries as $item) {
+                $item += ['product_id' => $product->id];
+
+                ProductGallery::query()->updateOrCreate(
+                    [
+                        'id' => $item['id']
+                    ],
+                    $item
+                );
+            }
+
+            DB::commit();
+
+            if (!empty($dataDeleteGalleries)) {
+                foreach ($dataDeleteGalleries as $id => $path) {
+                    ProductGallery::query()->where('id', $id)->delete();
+
+                    if (!empty($path) && Storage::exists($path)) {
+                        Storage::delete($path);
+                    }
+                }
+            }
+
+            if (!empty($productImgThumbnailCurrent) && Storage::exists($productImgThumbnailCurrent)) {
+                Storage::delete($productImgThumbnailCurrent);
+            }
+
+            return back()->with('success', 'Thao tác thành công!');
+        } catch (\Exception $exception) {
+            DB::rollBack();
+
+            if (
+                !empty($dataProduct['img_thumbnail'])
+                && Storage::exists($dataProduct['img_thumbnail'])
+            ) {
+
+                Storage::delete($dataProduct['img_thumbnail']);
+            }
+
+            $dataHasImage = $dataProductVariants + $dataProductGalleries;
+            foreach ($dataHasImage as $item) {
+                if (!empty($item['image']) && Storage::exists($item['image'])) {
+                    Storage::delete($item['image']);
+                }
+            }
+
+            return back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
