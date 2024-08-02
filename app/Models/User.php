@@ -12,16 +12,33 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    const TYPE_ADMIN = 'admin';
+    const TYPE_MEMBER = 'member';
+
+
+    // Kiểm tra xem người dùng có phải là admin không
+
+
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'fullname',
+        'username',
         'email',
+        'avatar',
+        'role',
         'password',
     ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+
 
     /**
      * The attributes that should be hidden for serialization.

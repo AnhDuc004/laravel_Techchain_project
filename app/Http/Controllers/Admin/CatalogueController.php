@@ -56,6 +56,13 @@ class CatalogueController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('model'));
     }
 
+    // public function showCatalogueProducts($id)
+    // {
+    //     $catalogue = Catalogue::with('products')->findOrFail($id);
+
+    //     return view('layouts.header', ['catalogue' => $catalogue]);
+    // }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -78,15 +85,15 @@ class CatalogueController extends Controller
             $data['cover'] = Storage::put(self::PATH_UPLOAD, $request->file('cover'));
         }
 
-        $currentCover = $model->cover;
+        $oldCover = $model->cover;
 
         $model->update($data);
-
-        if ($request->hasFile('cover') && $currentCover && Storage::exists($currentCover)) {
-            Storage::delete($currentCover);
+        // Xóa ảnh cũ
+        if ($request->hasFile('cover') && $oldCover && Storage::exists($oldCover)) {
+            Storage::delete($oldCover);
         }
 
-        return back();
+        return redirect()->back();
     }
 
     /**

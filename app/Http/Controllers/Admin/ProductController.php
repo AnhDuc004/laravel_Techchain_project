@@ -43,6 +43,7 @@ class ProductController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('catalogues', 'colors', 'sizes', 'tags'));
     }
 
+
     /**
      * Store a newly created resource in storage.
      */

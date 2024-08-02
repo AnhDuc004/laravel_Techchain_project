@@ -36,7 +36,7 @@ class Product extends Model
     ];
     public function catalogue()
     {
-        return $this->belongsTo(Catalogue::class, 'catalogue_id');
+        return $this->belongsTo(Catalogue::class);
     }
 
     public function tags()

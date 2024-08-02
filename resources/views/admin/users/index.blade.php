@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    List products
+    List Users
 @endsection
 
 @section('content')
@@ -30,9 +30,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title mb-0">
-                        List products
+                        List Users
                     </h5>
-                    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3" style="width: 80px">Add</a>
+
 
                 </div>
                 <div class="card-body">
@@ -41,19 +41,11 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Img Thumbnail</th>
-                                <th>Name</th>
-                                <th>SKU</th>
-                                <th>Catalogues</th>
-                                <th>Price Regular</th>
-                                <th>Price Sale</th>
-                                <th>Views</th>
-                                <th>Is Active</th>
-                                <th>Is Hot Deal</th>
-                                <th>Is Good Deal</th>
-                                <th>Is New</th>
-                                <th>Is Show Home</th>
-                                <th>Tags</th>
+                                <th>Avatar</th>
+                                <th>Full Name</th>
+                                <th>User name</th>
+                                <th>Gmail</th>
+                                <th>Role</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
                                 <th>Action</th>
@@ -68,7 +60,7 @@
                                             $url = $item->img_thumbnail;
 
                                             if (!\Str::contains($url, 'http')) {
-                                                $url = Storage::url($item->img_thumbnail);
+                                                $url = Storage::url($item->avatar);
                                             }
 
                                         @endphp
@@ -77,39 +69,28 @@
 
                                         <img src="{{ $url }}" alt="" width="100px">
                                     </td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->sku }}</td>
-                                    <td>{{ $item->catalogue?->name }}</td>
-                                    <td>{{ $item->price_regular }}</td>
-                                    <td>{{ $item->price_sale }}</td>
-                                    <td>{{ $item->views }}</td>
-                                    <td>{!! $item->is_active ? '<span class="badge bg-primary">YES</span>' : '<span class="badge bg-danger">NO</span>' !!}</td>
-                                    <td>{!! $item->is_hot_deal ? '<span class="badge bg-primary">YES</span>' : '<span class="badge bg-danger">NO</span>' !!}</td>
-                                    <td>{!! $item->is_good_deal
-                                        ? '<span class="badge bg-primary">YES</span>'
-                                        : '<span class="badge bg-danger">NO</span>' !!}</td>
-                                    <td>{!! $item->is_new ? '<span class="badge bg-primary">YES</span>' : '<span class="badge bg-danger">NO</span>' !!}</td>
-                                    <td>{!! $item->is_show_home
-                                        ? '<span class="badge bg-primary">YES</span>'
-                                        : '<span class="badge bg-danger">NO</span>' !!}</td>
-                                    <td>
-                                        @foreach ($item->tags as $tag)
-                                            {
-                                            <span class="badge bg-info">{{ $tag->name }}</span>
-                                            }
-                                        @endforeach
-                                    </td>
+                                    <td>{{ $item->fullname }}</td>
+                                    <td>{{ $item->username }}</td>
+                                    <td>{{ $item->email }}</td>
+                                    <td>{{ $item->role }}</td>
                                     <td>{{ $item->created_at }}</td>
                                     <td>{{ $item->updated_at }}</td>
                                     <td>
-                                        <form action="{{ route('admin.products.destroy', $item) }}" method="POST">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('Are you sure?')">Delete</button>
-                                        </form>
-                                        <a href="{{ route('admin.products.edit', $item->id) }}"
-                                            class="btn btn-warning">Edit Product</a>
+                                        @if ($item->role == 'member')
+                                            <form action="{{ route('admin.users.destroy', $item) }}" method="POST">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                            <a href="{{ route('admin.users.edit', $item->id) }}"
+                                                class="btn btn-warning">Edit
+                                                User</a>
+                                        @endif
+
+                                        <a href="{{ route('admin.users.show', $item->id) }}" class="btn btn-info">Show
+                                        </a>
+
                                     </td>
                                 </tr>
                             @endforeach

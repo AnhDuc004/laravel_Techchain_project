@@ -19,7 +19,7 @@ class Catalogue extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class, 'catalogue_id');
+        return $this->hasMany(Product::class);
     }
     public function product()
     {
