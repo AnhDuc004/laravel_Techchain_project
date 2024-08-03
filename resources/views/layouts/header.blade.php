@@ -104,22 +104,16 @@
                   </button>
 
 
-                  @if (Route::has('login'))
+                  {{-- @if (Route::has('login'))
                       <div class="top-right links">
                           @auth
                               <img src="{{ asset('/storage/' . Auth::user()->avatar) }}" style="border-radius: 10px "
                                   width="50px">
                               <a class="btn btn-sm btn-info ml-2 ml-lg-0" href="{{ route('logout') }}">Đăng Xuất</a>
-
-                              {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                  style="display: inline;">
-                                  @csrf
-                                  <button type="submit" class="btn btn-link" style="display: inline; cursor: pointer;">
-                                      Đăng xuất
-                                  </button>
-                              </form> --}}
+                              <a class="btn btn-sm btn-warning ml-2 ml-lg-0" href="{{ route('password.change') }}">Đổi Mật
+                                  Khẩu</a>
                               @if (Auth::user()->role == 'admin')
-                                  <a class="btn btn-sm btn-info ml-2 ml-lg-0" href="{{ route('admin.dashboard') }}">Quản
+                                  <a class="btn btn-sm btn-success ml-2 ml-lg-0" href="{{ route('admin.dashboard') }}">Quản
                                       Trị</a>
                               @endif
                           @else
@@ -132,10 +126,96 @@
                               @endif
                           @endauth
                       </div>
-                  @endif
+                  @endif --}}
+                  @if (Route::has('login'))
+                      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                          @auth
+                              <div class="container-fluid">
 
+                                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                                          {{-- quản lí danh mục và danh sách bài viết của admin --}}
+                                          @if (Auth::user()->role == 'admin')
+                                              <li class="nav-item">
+                                                  {{-- <a class="nav-link active" aria-current="page"
+                                                      href="{{ route('admin.dashboard') }}">Quản trị Web</a> --}}
+                                                  <img src="{{ asset('/storage/' . Auth::user()->avatar) }}"
+                                                      style="border-radius: 10px " width="50px">
+                                              </li>
+                                          @endif
+                                          {{-- logout --}}
+                                          <li class="nav-item dropdown" class="float-right">
+                                              <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                                  role="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                  aria-expanded="false" v-pre>
+                                                  Hello
+                                                  {{ Auth::user()->username }}
+                                              </a>
+
+                                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                                                  <a class="dropdown-item" href="{{ route('password.change') }}">Đổi mật
+                                                      khẩu
+                                                  </a>
+                                                  <a class="dropdown-item" href="{{ route('logout') }}">Đăng xuất
+                                                  </a>
+
+                                                  <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                      class="d-none">
+                                                      @csrf
+                                                  </form>
+                                              </div>
+
+                                          </li>
+                                          {{-- end logout --}}
+
+                                          {{-- chua dang nhap --}}
+                                      @else
+                                          <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                                              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                                      {{-- Tìm Kiếm  --}}
+                                                      {{-- <li class="nav-item">
+                                                    <a class="nav-link active" aria-current="page"
+                                                        href="{{ route('search.index') }}">Tìm</a>
+                                                </li> --}}
+                                                      {{--  --}}
+                                                      <li class="nav-item">
+                                                          <a class="nav-link active" aria-current="page"
+                                                              href="{{ route('login') }}">Đăng
+                                                              Nhập</a>
+                                                      </li>
+                                                  </ul>
+                                              </div>
+                                  </div>
+                          </nav>
+                          @if (Route::has('register'))
+                              <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                                  <div class="container-fluid">
+                                      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                              <li class="nav-item">
+                                                  <a class="nav-link active" aria-current="page"
+                                                      href="{{ route('register') }}">Đăng
+                                                      ký</a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </div>
+                              </nav>
+                          @endif
+                      @endauth
+
+
+                      </ul>
               </div>
+      </div>
+      </nav>
+      @endif
 
-          </nav>
+      </div>
+
+      </nav>
       </div>
   </header>

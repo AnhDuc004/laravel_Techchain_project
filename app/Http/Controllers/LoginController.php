@@ -42,7 +42,12 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
-        $data = $request->only('email', 'password');
+
+        // $data = $request->only('email', 'password');
+        $data = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
         // check account
         if (Auth::attempt($data) && Auth::user()->role == 'admin') {
             return redirect()->route('admin.dashboard')->with('msg', 'Đăng nhập thành công!');

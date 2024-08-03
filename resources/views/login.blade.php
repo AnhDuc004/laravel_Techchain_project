@@ -167,6 +167,11 @@
     #submit:active {
         color: #d0d0d2;
     }
+
+    .error {
+        color: red;
+        font-size: 0.8em;
+    }
 </style>
 
 
@@ -179,7 +184,7 @@
 
         <div class="container">
             <div class="left"
-                style="background-image: url('http://127.0.0.1:5500/public/theme/client/images/post/post-5.jpg'); background-size: cover;
+                style="background-image: url('theme/client/images/post/post-5.jpg'); background-size: cover;
             background-position: center;
             background-repeat: no-repeat; /* Không lặp lại ảnh */">
                 <div class="login" style="font-size: 35px">Đăng Nhập</div>
@@ -204,11 +209,23 @@
                 <div class="form">
                     <form action="{{ route('postLogin') }}" method="POST">
                         @csrf
-                        <label for="email">Email</label>
-                        <input type="email" name="email" id="email">
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="password">
-                        <input type="submit" id="submit" value="Submit">
+                        <div class="row">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" value="{{ old('email') }}" id="email">
+                            @if ($errors->has('email'))
+                                <span class="error">{{ $errors->first('email') }}</span>
+                            @endif
+
+
+                            <div class="row">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password">
+                                @if ($errors->has('password'))
+                                    <span class="error">{{ $errors->first('password') }}</span>
+                                @endif
+                                <input type="submit" id="submit" value="Submit">
+
+                            </div>
                     </form>
                 </div>
 

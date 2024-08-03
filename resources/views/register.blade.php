@@ -184,7 +184,7 @@
 
         <div class="container">
             <div class="left"
-                style="background-image: url('http://127.0.0.1:5500/public/theme/client/images/post/post-3.jpg'); background-size: cover;
+                style="background-image: url('theme/client/images/post/post-3.jpg'); background-size: cover;
             background-position: center; 
             background-repeat: no-repeat;">
                 <div class="login" style="font-size: 35px">Đăng Ký</div>

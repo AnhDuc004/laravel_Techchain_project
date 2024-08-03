@@ -56,12 +56,7 @@ class CatalogueController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('model'));
     }
 
-    // public function showCatalogueProducts($id)
-    // {
-    //     $catalogue = Catalogue::with('products')->findOrFail($id);
 
-    //     return view('layouts.header', ['catalogue' => $catalogue]);
-    // }
 
     /**
      * Show the form for editing the specified resource.

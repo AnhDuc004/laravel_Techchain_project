@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Catalogue;
 use App\Models\Product;
 use App\Models\ProductColor;
@@ -12,6 +14,7 @@ use App\Models\ProductVariant;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -139,7 +142,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         list(
             $dataProduct,
@@ -152,9 +155,8 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            $productImgThumbnailCurrent = $product->img_thumbnail; // Lưu lại giá trị hiện tại để xóa
+            $productImgThumbnailCurrent = $product->img_thumbnail;
 
-            /** @var Product $product */
             $product->update($dataProduct);
 
             foreach ($dataProductVariants as $item) {
@@ -199,28 +201,28 @@ class ProductController extends Controller
                 Storage::delete($productImgThumbnailCurrent);
             }
 
-            return back()->with('success', 'Thao tác thành công!');
+            return redirect()->route('admin.products.index')->with('success', 'Thao tác thành công!');
         } catch (\Exception $exception) {
             DB::rollBack();
 
-            if (
-                !empty($dataProduct['img_thumbnail'])
-                && Storage::exists($dataProduct['img_thumbnail'])
-            ) {
-
+            if (!empty($dataProduct['img_thumbnail']) && Storage::exists($dataProduct['img_thumbnail'])) {
                 Storage::delete($dataProduct['img_thumbnail']);
             }
 
-            $dataHasImage = $dataProductVariants + $dataProductGalleries;
+            $dataHasImage = array_merge($dataProductVariants, $dataProductGalleries);
             foreach ($dataHasImage as $item) {
                 if (!empty($item['image']) && Storage::exists($item['image'])) {
                     Storage::delete($item['image']);
                 }
             }
 
+            Log::error('Product update failed', ['exception' => $exception]);
+
             return back()->with('error', $exception->getMessage());
         }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -238,5 +240,59 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return back();
         }
+    }
+    private function handleData(StoreProductRequest|UpdateProductRequest $request)
+    {
+        // Lấy dữ liệu sản phẩm từ request, ngoại trừ các biến thể sản phẩm, thẻ và thư viện ảnh
+        $dataProduct = $request->except(['product_variants', 'tags', 'product_galleries']);
+
+        // Thiết lập các trường mặc định nếu không tồn tại
+        $dataProduct['is_active'] = $dataProduct['is_active'] ?? 0;
+        $dataProduct['is_hot_deal'] = $dataProduct['is_hot_deal'] ?? 0;
+        $dataProduct['is_good_deal'] = $dataProduct['is_good_deal'] ?? 0;
+        $dataProduct['is_new'] = $dataProduct['is_new'] ?? 0;
+        $dataProduct['is_show_home'] = $dataProduct['is_show_home'] ?? 0;
+
+        // Xử lý slug cho sản phẩm
+        $dataProduct['slug'] = Str::slug($dataProduct['name']) . '-' . $dataProduct['sku'];
+
+        // Xử lý hình ảnh thu nhỏ nếu có
+        if (!empty($dataProduct['img_thumbnail'])) {
+            $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);
+        }
+
+        // Xử lý các biến thể sản phẩm
+        $dataProductVariantsTmp = $request->product_variants ?: [];
+        $dataProductVariants = [];
+        foreach ($dataProductVariantsTmp as $key => $item) {
+            $tmp = explode('-', $key);
+            $image = !empty($item['image']) ? Storage::put('product_variants', $item['image']) : ($item['current_image'] ?? null);
+            $dataProductVariants[] = [
+                'product_size_id' => $tmp[0],
+                'product_color_id' => $tmp[1],
+                'quatity' => $item['quatity'],
+                'image' => $image
+            ];
+        }
+
+        // Xử lý các thư viện ảnh sản phẩm
+        $dataProductGalleriesTmp = $request->product_galleries ?: [];
+        $dataProductGalleries = [];
+        foreach ($dataProductGalleriesTmp as $image) {
+            if (!empty($image)) {
+                $dataProductGalleries[] = [
+                    'id' => $item['id'] ?? null, // Tồn tại ID khi update
+                    'image' => Storage::put('product_galleries', $image)
+                ];
+            }
+        }
+
+        // Lấy các thẻ sản phẩm từ request
+        $dataProductTags = $request->tags;
+
+        // Lấy các thư viện ảnh cần xóa từ request
+        $dataDeleteGalleries = $request->delete_galleries;
+
+        return [$dataProduct, $dataProductVariants, $dataProductGalleries, $dataProductTags, $dataDeleteGalleries];
     }
 }

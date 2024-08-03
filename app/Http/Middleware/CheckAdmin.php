@@ -20,6 +20,6 @@ class CheckAdmin
             return $next($request);
         }
 
-        return redirect('/welcome'); // Hoặc trang khác mà bạn muốn chuyển hướng người dùng không phải admin
+        return redirect('trang-chu'); // Hoặc trang khác mà bạn muốn chuyển hướng người dùng không phải admin
     }
 }
