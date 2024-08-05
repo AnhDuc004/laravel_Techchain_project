@@ -74,12 +74,7 @@
                         <h3 class="h4 mb-3"><a class="post-title"
                                 href="post-details.html">{{ $topViewedProduct->name }}</a></h3>
                         <ul class="card-meta list-inline">
-                            <li class="list-inline-item">
-                                <a href="author-single.html" class="card-meta-author">
-                                    <img src="theme/client/images/kate-stone.jpg" alt="Kate Stone">
-                                    <span>Kate Stone</span>
-                                </a>
-                            </li>
+
                             <li class="list-inline-item">
                                 <i class="ti-timer"></i>2 Min To Read
                             </li>

@@ -9,7 +9,7 @@
               </a>
               <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
                   <ul class="navbar-nav mx-auto">
-                      <li class="nav-item dropdown">
+                      {{-- <li class="nav-item dropdown">
                           <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                               aria-expanded="false">
                               homepage <i class="ti-angle-down ml-1"></i>
@@ -34,7 +34,7 @@
                               <a class="dropdown-item" href="index-grid-right.html">Homepage Grid With Right Sidebar</a>
 
                           </div>
-                      </li>
+                      </li> --}}
                       <li class="nav-item dropdown">
                           <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                               aria-expanded="false">
@@ -136,25 +136,21 @@
                                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                                           {{-- quản lí danh mục và danh sách bài viết của admin --}}
-                                          @if (Auth::user()->role == 'admin')
-                                              <li class="nav-item">
-                                                  {{-- <a class="nav-link active" aria-current="page"
-                                                      href="{{ route('admin.dashboard') }}">Quản trị Web</a> --}}
-                                                  <img src="{{ asset('/storage/' . Auth::user()->avatar) }}"
-                                                      style="border-radius: 10px " width="50px">
-                                              </li>
-                                          @endif
+
                                           {{-- logout --}}
                                           <li class="nav-item dropdown" class="float-right">
                                               <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
                                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                                                   aria-expanded="false" v-pre>
-                                                  Hello
                                                   {{ Auth::user()->username }}
                                               </a>
 
                                               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
+                                                  @if (Auth::user()->role == 'admin')
+                                                      <a class="dropdown-item" href="http://127.0.0.1:8000/admin">Trang
+                                                          quản trị </a>
+                                                  @endif
                                                   <a class="dropdown-item" href="{{ route('password.change') }}">Đổi mật
                                                       khẩu
                                                   </a>

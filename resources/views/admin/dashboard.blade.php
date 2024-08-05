@@ -32,7 +32,8 @@
                                         <!--end col-->
                                         <div class="col-auto">
                                             <button type="button" class="btn btn-soft-success"><i
-                                                    class="ri-add-circle-line align-middle me-1"></i> Add Product</button>
+                                                    class="ri-add-circle-line align-middle me-1"></i><a
+                                                    href="{{ route('admin.products.create') }}">Add Product</a> </button>
                                         </div>
                                         <!--end col-->
                                         <div class="col-auto">
@@ -89,23 +90,30 @@
 
                     <div class="col-xl-3 col-md-6">
                         <!-- card -->
+                        @php
+                            $mostViewedProduct = DB::table('products')->orderBy('views', 'desc')->first();
+                        @endphp
                         <div class="card card-animate">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-grow-1 overflow-hidden">
-                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Orders</p>
+                                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Sản phẩm có lượt
+                                            xem cao nhất</p>
                                     </div>
-                                    <div class="flex-shrink-0">
+                                    {{-- <div class="flex-shrink-0">
                                         <h5 class="text-danger fs-14 mb-0">
                                             <i class="ri-arrow-right-down-line fs-13 align-middle"></i> -3.57 %
                                         </h5>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-4">
                                     <div>
-                                        <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                                data-target="36894">0</span></h4>
-                                        <a href="" class="text-decoration-underline">View all orders</a>
+                                        {{-- <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
+                                                data-target="36894">0</span></h4> --}}
+                                        <img src="{{ asset('/storage/' . $mostViewedProduct->img_thumbnail) }} "
+                                            alt="" height="100">
+                                        <a href="{{ route('admin.products.show', $mostViewedProduct->id) }}"
+                                            class="text-decoration-underline">View products</a>
                                     </div>
                                     <div class="avatar-sm flex-shrink-0">
                                         <span class="avatar-title bg-info-subtle rounded fs-3">
