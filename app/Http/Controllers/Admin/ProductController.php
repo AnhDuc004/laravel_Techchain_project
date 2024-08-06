@@ -50,7 +50,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
         $dataProduct = $request->except(['product_variants', 'tags', 'product_galleries']);
         $dataProduct['is_active'] = isset($dataProduct['is_active']) ? 1 : 0;

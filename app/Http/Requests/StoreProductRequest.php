@@ -26,7 +26,7 @@ class StoreProductRequest extends FormRequest
             'catalogue_id' => ['required', Rule::exists('catalogues', 'id')],
             'name' => 'required|max:255',
             'sku' => 'required|max:255|unique:products',
-            'img_thumbnail' => 'image',
+            'img_thumbnail' => 'required|image',
             'price_regular' => 'required|min:0',
             'price_sale' => 'required|min:0',
             'description' => 'max:255',

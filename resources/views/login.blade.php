@@ -34,6 +34,11 @@
 
     .page {
         background: #e2e2e5;
+        background-image: url('https://www.healthifyme.com/blog/wp-content/uploads/2020/01/gym-diet-cover-1.jpg');
+        background-size: cover;
+        object-fit: cover;
+        /* background-position: center; */
+        background-repeat: no-repeat;
         display: flex;
         flex-direction: column;
         height: calc(100% - 40px);
