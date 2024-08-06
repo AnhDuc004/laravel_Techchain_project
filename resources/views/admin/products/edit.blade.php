@@ -166,7 +166,7 @@
                                     <table class="table table-bordered">
                                         <tr class="text-center">
                                             <th>Size</th>
-                                            <th>Color</th>
+                                            <th>Hương Vị</th>
                                             <th>Quantity</th>
                                             <th>Image</th>
                                             <th></th>
@@ -199,9 +199,10 @@
                                                     @php($key = $sizeID . '-' . $colorID)
 
                                                     <td>
-                                                        <div
-                                                            style="width: 50px; height: 50px; background: {{ $colorName }};">
-                                                        </div>
+                                                        {{-- <div
+                                                            style="width: 50px; height: 50px; background: ;">
+                                                        </div> --}}
+                                                        {{ $colorName }}
                                                     </td>
                                                     <td>
                                                         <input type="text" class="form-control"
