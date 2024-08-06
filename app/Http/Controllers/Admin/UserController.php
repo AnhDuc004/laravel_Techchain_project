@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -27,5 +28,24 @@ class UserController extends Controller
     {
         $model = User::query()->findOrFail($id);
         return view(self::PATH_VIEW . __FUNCTION__, compact('model'));
+    }
+    public function update(Request $request, string $id)
+    {
+        $model = User::query()->findOrFail($id);
+        $data = $request->except('avatar');
+
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = Storage::put(self::PATH_UPLOAD, $request->file('avatar'));
+        }
+
+        $oldAvatar = $model->avatar;
+
+        $model->update($data);
+        // Xóa ảnh cũ
+        if ($request->hasFile('avatar') && $oldAvatar && Storage::exists($oldAvatar)) {
+            Storage::delete($oldAvatar);
+        }
+
+        return redirect()->back();
     }
 }
