@@ -46,6 +46,12 @@ class UserController extends Controller
             Storage::delete($oldAvatar);
         }
 
-        return redirect()->back();
+        return redirect()->route('admin.users.index');
+    }
+    public function destroy(string $id)
+    {
+        $model = User::query()->findOrFail($id);
+        $model->delete();
+        return redirect()->route('admin.users.index');
     }
 }

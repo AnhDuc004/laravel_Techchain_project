@@ -5,7 +5,7 @@
           <nav class="navbar navbar-expand-lg navbar-white">
               <a class="navbar-brand order-1" href="http://127.0.0.1:8000/">
                   <img class="img-fluid" width="100px" src="theme/client/images/logo.png"
-                      alt="Reader | Hugo Personal Blog Template">
+                      alt="Gym Store | Healthly && Beauty">
               </a>
               <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
                   <ul class="navbar-nav mx-auto">
